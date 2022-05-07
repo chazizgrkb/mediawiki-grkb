@@ -2549,9 +2549,7 @@ $templates
 	protected function makeResourceLoaderLink( $modules, $only, $useESI = false, array $extraQuery = array(), $loadCall = false ) {
 		global $wgResourceLoaderUseESI;
 
-		if ( !count( $modules ) ) {
-			return '';
-		}
+		$modules = (array) $modules; // Wikia change - PHP 7.3
 
 		if ( count( $modules ) > 1 ) {
 			// Remove duplicate module requests

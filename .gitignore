@@ -53,3 +53,4 @@ lib/Swagger/swagger-codegen-cli.jar
 .phplint-cache
 
 docker/devbox/.env
+LocalSettings.php
