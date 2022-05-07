@@ -653,7 +653,7 @@ abstract class DatabaseBase implements DatabaseType {
 	/**
 	 * Given a DB type, construct the name of the appropriate child class of
 	 * DatabaseBase. This is designed to replace all of the manual stuff like:
-	 *	$class = 'Database' . ucfirst( strtolower( $type ) );
+	 *	$class = 'Database' . ucfirst( strtolower( $dbType ) );
 	 * as well as validate against the canonical list of DB types we have
 	 *
 	 * This factory function is mostly useful for when you need to connect to a
@@ -667,17 +667,39 @@ abstract class DatabaseBase implements DatabaseType {
 	 *
 	 * @param $dbType String A possible DB type
 	 * @param $p Array An array of options to pass to the constructor.
-	 *    Valid options are: host, user, password, dbname, flags, tablePrefix
+	 *    Valid options are: host, user, password, dbname, flags, tablePrefix, driver
 	 * @return DatabaseBase subclass or null
 	 */
 	public final static function factory( $dbType, $p = array() ) {
 		$canonicalDBTypes = array(
-			'mysql', 'postgres', 'sqlite', 'oracle', 'mssql', 'ibm_db2'
+			'mysql', 'mysqli', 'postgres', 'sqlite', 'oracle', 'mssql', 'ibm_db2'
 		);
-		$dbType = strtolower( $dbType );
-		$class = 'Database' . ucfirst( $dbType );
 
-		if( in_array( $dbType, $canonicalDBTypes ) || ( class_exists( $class ) && is_subclass_of( $class, 'DatabaseBase' ) ) ) {
+		$dbType = strtolower( $dbType );
+		if ( isset( $canonicalDBTypes[$dbType] ) && $canonicalDBTypes[$dbType] ) {
+			$driver = isset( $p['driver'] ) ? $p['driver'] : null;
+			$possibleDrivers = $canonicalDBTypes[$dbType];
+			if ( $driver ) {
+				if ( in_array( $driver, $possibleDrivers ) ) {
+					$dbType = $driver;
+				} else {
+					throw new MWException( __METHOD__ .
+						" cannot construct Database with type '$dbType' and driver '$driver'" );
+				}
+			} else {
+				foreach ( $possibleDrivers as $posDriver ) {
+					if ( extension_loaded( $posDriver ) ) {
+						$dbType = $posDriver;
+						break;
+					}
+				}
+				throw new MWException( __METHOD__ .
+					" no viable database extension found for type '$dbType'" );
+			}
+		}
+
+		$class = 'Database' . ucfirst( $dbType );
+		if ( class_exists( $class ) && is_subclass_of( $class, 'DatabaseBase' ) ) {
 			return new $class(
 				isset( $p['host'] ) ? $p['host'] : false,
 				isset( $p['user'] ) ? $p['user'] : false,
