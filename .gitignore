@@ -54,3 +54,4 @@ lib/Swagger/swagger-codegen-cli.jar
 
 docker/devbox/.env
 LocalSettings.php
+images/
