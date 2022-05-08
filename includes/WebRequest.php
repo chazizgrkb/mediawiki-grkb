@@ -51,11 +51,6 @@ class WebRequest {
 	private $ip;
 
 	public function __construct() {
-		/// @todo FIXME: This preemptive de-quoting can interfere with other web libraries
-		///        and increases our memory footprint. It would be cleaner to do on
-		///        demand; but currently we have no wrapper for $_SERVER etc.
-		$this->checkMagicQuotes();
-
 		// POST overrides GET data
 		// We don't use $_REQUEST here to avoid interference from cookies...
 		$this->data = $_POST + $_GET;
@@ -274,25 +269,6 @@ class WebRequest {
 		}
 		$arr = $clean;
 		return $arr;
-	}
-
-	/**
-	 * If magic_quotes_gpc option is on, run the global arrays
-	 * through fix_magic_quotes to strip out the stupid slashes.
-	 * WARNING: This should only be done once! Running a second
-	 * time could damage the values.
-	 */
-	private function checkMagicQuotes() {
-		$mustFixQuotes = function_exists( 'get_magic_quotes_gpc' )
-			&& get_magic_quotes_gpc();
-		if( $mustFixQuotes ) {
-			$this->fix_magic_quotes( $_COOKIE );
-			$this->fix_magic_quotes( $_ENV );
-			$this->fix_magic_quotes( $_GET );
-			$this->fix_magic_quotes( $_POST );
-			$this->fix_magic_quotes( $_REQUEST );
-			$this->fix_magic_quotes( $_SERVER );
-		}
 	}
 
 	/**

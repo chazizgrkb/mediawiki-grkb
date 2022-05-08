@@ -220,7 +220,7 @@ class LegacyTemplate extends BaseTemplate {
 		}
 
 		// @todo FIXME: Is using Language::pipeList impossible here? Do not quite understand the use of the newline
-		return implode( $s, wfMsgExt( 'pipe-separator', 'escapenoentities' ) . "\n" );
+		return implode( wfMsgExt( 'pipe-separator', 'escapenoentities' ) . "\n", $s );
 	}
 
 	/**
@@ -319,7 +319,7 @@ class LegacyTemplate extends BaseTemplate {
 				}
 			}
 
-			$s = implode( $element, $sep );
+			$s = implode( $sep, $element );
 
 			if ( $title->getArticleId() ) {
 				$s .= "\n<br />";

@@ -766,9 +766,11 @@ class MagicWordArray {
 	 *
 	 * @return array
 	 */
-	function parseMatch( $m ) {
+	public function parseMatch( $m ) {
 		reset( $m );
-		while ( list( $key, $value ) = each( $m ) ) {
+		while ( ( $key = key( $m ) ) !== null ) {
+			$value = current( $m );
+			next( $m );
 			if ( $key === 0 || $value === '' ) {
 				continue;
 			}
@@ -780,10 +782,10 @@ class MagicWordArray {
 			}
 			list( /* $synIndex */, $magicName ) = $parts;
 			$paramValue = next( $m );
-			return array( $magicName, $paramValue );
+			return [ $magicName, $paramValue ];
 		}
 		// This shouldn't happen either
-		throw new MWException( __METHOD__.': parameter not found' );
+		throw new MWException( __METHOD__ . ': parameter not found' );
 	}
 
 	/**
