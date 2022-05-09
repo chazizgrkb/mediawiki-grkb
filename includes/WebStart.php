@@ -22,6 +22,11 @@
  *
  * @file
  */
+ 
+ // Wikia change - begin - @author: wladek
+// Catch all output
+ob_start();
+// Wikia change - end
 
 # Protect against register_globals
 # This must be done before any globals are set by the code
@@ -137,6 +142,11 @@ if ( defined( 'MW_CONFIG_CALLBACK' ) ) {
 if ( $wgEnableSelenium ) {
 	require_once( MWInit::compiledPath( "includes/SeleniumWebSettings.php" ) );
 }
+
+// Wikia change - begin - @author: wladek
+// Catch all output
+$initialOutput = ob_get_clean();
+// Wikia change - end
 
 wfProfileOut( 'WebStart.php-conf' );
 

@@ -676,6 +676,14 @@ $wgImageMagickTempDir = false;
  */
 $wgCustomConvertCommand = false;
 
+ /**
+ * Minimum upload chunk size, in bytes. When using chunked upload, non-final
+ * chunks smaller than this will be rejected. May be reduced based on the
+ * 'upload_max_filesize' or 'post_max_size' PHP settings.
+ * @since 1.26
+ */
+$wgMinUploadChunkSize = 1024; # 1KB
+
 /**
  * Some tests and extensions use exiv2 to manipulate the EXIF metadata in some image formats.
  */
@@ -3877,6 +3885,12 @@ $wgRateLimits = array(
 		'newbie' => null, // for each recent (autoconfirmed) account; overrides 'user'
 		'ip'     => null, // for each anon and recent account
 		'subnet' => null, // ... with final octet removed
+		),
+	'upload' => array(
+		'user'   => null,
+		'newbie' => null,
+		'ip'     => null,
+		'subnet' => null,
 		),
 	'move' => array(
 		'user'   => null,

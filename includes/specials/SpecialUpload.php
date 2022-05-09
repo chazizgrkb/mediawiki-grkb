@@ -428,6 +428,14 @@ class SpecialUpload extends SpecialPage {
 				return;
 			}
 		}
+		
+		// This is as late as we can throttle, after expected issues have been handled
+		if ( UploadBase::isThrottled( $this->getUser() ) ) {
+			$this->showRecoverableUploadError(
+				$this->msg( 'actionthrottledtext' )->escaped()
+			);
+			return;
+		}
 
 		// Get the page text if this is not a reupload
 		if( !$this->mForReUpload ) {

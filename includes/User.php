@@ -839,12 +839,10 @@ class User {
 		global $wgMinimalPasswordLength;
 		// Decide the final password length based on our min password length, stopping at a minimum of 10 chars
 		$length = max( 10, $wgMinimalPasswordLength );
-		// Multiply by 1.25 to get the number of hex characters we need
-		$length = $length * 1.25;
-		// Generate random hex chars
-		$hex = MWCryptRand::generateHex( $length );
+		// Generate random hex chars by multiplying by 1.25 to get the number of hex characters we need
+		$hex = MWCryptRand::generateHex( ceil( $length * 1.25 ) );
 		// Convert from base 16 to base 32 to get a proper password like string
-		return wfBaseConvert( $hex, 16, 32 );
+		return substr( wfBaseConvert( $hex, 16, 32, $length ), -$length );
 	}
 
 	/**
@@ -3253,10 +3251,11 @@ class User {
 	 */
 	public function matchEditToken( $val, $salt = '', $request = null ) {
 		$sessionToken = $this->getEditToken( $salt, $request );
-		if ( $val != $sessionToken ) {
+		$equals = hash_equals( $sessionToken, $val );
+		if ( !$equals ) {
 			wfDebug( "User::matchEditToken: broken session data\n" );
 		}
-		return $val == $sessionToken;
+		return $equals;
 	}
 
 	/**
@@ -3860,6 +3859,28 @@ class User {
 		$key = "right-$right";
 		$msg = wfMessage( $key );
 		return $msg->isBlank() ? $right : $msg->text();
+	}
+	
+	/**
+	 * Get the username for an account given by the ID. It's basically User::whoIs() will a fallback.
+	 *
+	 * If it's an anon (userId = 0), return the second argument passed to this method.
+	 * The same fallback will happen when there's no database entry for a given user. In such case warning will be logged.
+	 *
+	 * @see SUS-825
+	 *
+	 * @param $userId int userId
+	 * @param $name string anon username
+	 * @return string
+	 */
+	public static function getUsername( int $userId, string $name ) : string {
+		return ( $userId > 0 )
+			?
+			// logged-in - get the username by user ID
+			static::whoIs( $userId )
+			:
+			// anons - return the second argument - an IP address
+			$name;
 	}
 
 	/**

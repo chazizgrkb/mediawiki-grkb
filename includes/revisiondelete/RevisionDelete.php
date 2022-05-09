@@ -134,6 +134,14 @@ class RevDel_RevisionItem extends RevDel_Item {
 	public function getAuthorNameField() {
 		return 'user_name'; // see Revision::selectUserFields()
 	}
+	
+	/**
+	 * SUS-3081: use user name lookup
+	 * @return string
+	 */
+	public function getAuthorName() {
+		return User::getUsername( $this->getAuthorId(), '' );
+	}
 
 	public function canView() {
 		return $this->revision->userCan( Revision::DELETED_RESTRICTED, $this->list->getUser() );

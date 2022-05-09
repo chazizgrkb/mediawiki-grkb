@@ -329,6 +329,12 @@ class LocalFile extends File {
 		foreach ( $array as $name => $value ) {
 			$this->$name = $value;
 		}
+		
+		/* Wikia change begin */
+		if ( array_key_exists( 'user', $array ) ) {
+			$this->user_text = User::getUsername( $array['user'], $array['user_text'] );
+		}
+		/* Wikia change end */
 
 		$this->fileExists = true;
 		$this->maybeUpgradeRow();
@@ -519,7 +525,7 @@ class LocalFile extends File {
 		$this->load();
 
 		if ( $type == 'text' ) {
-			return $this->user_text;
+			return User::getUsername( (int)$this->user, (string)$this->user_text ); // SUS-808
 		} elseif ( $type == 'id' ) {
 			return $this->user;
 		}

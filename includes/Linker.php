@@ -1605,9 +1605,12 @@ class Linker {
 	public static function buildRollbackLink( $rev ) {
 		global $wgRequest, $wgUser;
 		$title = $rev->getTitle();
+		// SUS-812: use user name lookup to determine link target
+		$userName = User::getUsername( $rev->getUser(), $rev->getUserText() );
+		
 		$query = array(
 			'action' => 'rollback',
-			'from' => $rev->getUserText(),
+			'from' => $userName,
 			'token' => $wgUser->getEditToken( array( $title->getPrefixedText(), $rev->getUserText() ) ),
 		);
 		if ( $wgRequest->getBool( 'bot' ) ) {

@@ -2519,7 +2519,8 @@ class WikiPage extends Page {
 		$row = $dbw->fetchObject( $res );
 
 		if ( $row ) { // $row is false if the only contributor is hidden
-			$onlyAuthor = $row->rev_user_text;
+			// SUS-807
+			$onlyAuthor = User::getUsername( $row->rev_user, $row->rev_user_text );
 			// Try to find a second contributor
 			foreach ( $res as $row ) {
 				if ( $row->rev_user_text != $onlyAuthor ) { // Bug 22999
