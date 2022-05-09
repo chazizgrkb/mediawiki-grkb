@@ -1352,7 +1352,7 @@ class FormatMetadata {
 **/
 class FormatExif {
 	var $meta;
-	function FormatExif ( $meta ) {
+	function __construct ( $meta ) {
 		wfDeprecated(__METHOD__);
 		$this->meta = $meta;
 	}
