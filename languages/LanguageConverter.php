@@ -331,26 +331,32 @@ class LanguageConverter {
 		   1. HTML markups (anything between < and >)
 		   2. HTML entities
 		   3. placeholders created by the parser
+		   IMPORTANT: Beware of failure from pcre.backtrack_limit (T124404).
+		   Minimize use of backtracking where possible.
 		*/
 		global $wgParser;
 		if ( isset( $wgParser ) && $wgParser->UniqPrefix() != '' ) {
-			$marker = '|' . $wgParser->UniqPrefix() . '[\-a-zA-Z0-9]+';
+			$marker = '|' . $wgParser->UniqPrefix() . '[^\x7f]++\x7f';
 		} else {
 			$marker = '';
 		}
 
 		// this one is needed when the text is inside an HTML markup
-		$htmlfix = '|<[^>]+$|^[^<>]*>';
+		$htmlfix = '|<[^>\004]++(?=\004$)|^[^<>]*+>';
+
+		// Optimize for the common case where these tags have
+		// few or no children. Thus try and possesively get as much as
+		// possible, and only engage in backtracking when we hit a '<'.
 
 		// disable convert to variants between <code></code> tags
-		$codefix = '<code>.+?<\/code>|';
+		$codefix = '<code>[^<]*+(?:(?:(?!<\/code>).)[^<]*+)*+<\/code>|';
 		// disable convertsion of <script type="text/javascript"> ... </script>
-		$scriptfix = '<script.*?>.*?<\/script>|';
+		$scriptfix = '<script[^>]*+>[^<]*+(?:(?:(?!<\/script>).)[^<]*+)*+<\/script>|';
 		// disable conversion of <pre xxxx> ... </pre>
-		$prefix = '<pre.*?>.*?<\/pre>|';
+		$prefix = '<pre[^>]*+>[^<]*+(?:(?:(?!<\/pre>).)[^<]*+)*+<\/pre>|';
 
-		$reg = '/' . $codefix . $scriptfix . $prefix .
-			'<[^>]+>|&[a-zA-Z#][a-z0-9]+;' . $marker . $htmlfix . '/s';
+		$reg = '/' . $codefix . $scriptfix . $prefix . $htmlFullTag .
+			'&[a-zA-Z#][a-z0-9]++;' . $marker . $htmlfix . '|\004$/s';
 		$startPos = 0;
 		$sourceBlob = '';
 		$literalBlob = '';
@@ -360,13 +366,26 @@ class LanguageConverter {
 
 		$markupMatches = null;
 		$elementMatches = null;
+		// We add a marker (\004) at the end of text, to ensure we always match the
+		// entire text (Otherwise, pcre.backtrack_limit might cause silent failure)
 		while ( $startPos < strlen( $text ) ) {
-			if ( preg_match( $reg, $text, $markupMatches, PREG_OFFSET_CAPTURE, $startPos ) ) {
+			if ( preg_match( $reg, $text . "\004", $markupMatches, PREG_OFFSET_CAPTURE, $startPos ) ) {
 				$elementPos = $markupMatches[0][1];
 				$element = $markupMatches[0][0];
+				if ( $element === "\004" ) {
+					// We hit the end.
+					$elementPos = strlen( $text );
+					$element = '';
+				}
 			} else {
-				$elementPos = strlen( $text );
-				$element = '';
+				// If we hit here, then Language Converter could be tricked
+				// into doing an XSS, so we refuse to translate.
+				// If non-crazy input manages to reach this code path,
+				// we should consider it a bug.
+				
+				// wikia logger shit removed
+				
+				return $text;
 			}
 
 			// Queue the part before the markup for translation in a batch
@@ -595,23 +614,39 @@ class LanguageConverter {
 		$startPos = 0;
 		$out = '';
 		$length = strlen( $text );
-		while ( $startPos < $length ) {
-			$pos = strpos( $text, '-{', $startPos );
+		$continue = 1;
 
-			if ( $pos === false ) {
+		$noScript = '<script.*?>.*?<\/script>(*SKIP)(*FAIL)';
+		$noStyle = '<style.*?>.*?<\/style>(*SKIP)(*FAIL)';
+		$noHtml = '<(?:[^>=]*+(?>[^>=]*+=\s*+(?:"[^"]*"|\'[^\']*\'|[^\'">\s]*+))*+[^>=]*+>|.*+)(*SKIP)(*FAIL)';
+		while ( $startPos < $length && $continue ) {
+			$continue = preg_match(
+				// Only match -{ outside of html.
+				"/$noScript|$noStyle|$noHtml|-\{/",
+				$text,
+				$m,
+				PREG_OFFSET_CAPTURE,
+				$startPos
+			);
+
+			if ( !$continue ) {
 				// No more markup, append final segment
 				$out .= $this->autoConvert( substr( $text, $startPos ), $variant );
 				return $out;
 			}
 
-			// Markup found
+			// Offset of the match of the regex pattern.
+			$pos = $m[0][1];
+
 			// Append initial segment
 			$out .= $this->autoConvert( substr( $text, $startPos, $pos - $startPos ), $variant );
 
-			// Advance position
+			// -{ marker found, not in attribute
+			// Advance position up to -{ marker.
 			$startPos = $pos;
 
 			// Do recursive conversion
+			// Note: This passes $startPos by reference, and advances it.
 			$out .= $this->recursiveConvertRule( $text, $variant, $startPos, $depth + 1 );
 		}
 

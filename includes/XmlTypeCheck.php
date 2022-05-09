@@ -66,9 +66,23 @@ class XmlTypeCheck {
 	 */
 	private $parserOptions = array(
 		'processing_instruction_handler' => '',
+		'external_dtd_handler' => '',
+		'dtd_handler' => '',
+		'require_safe_dtd' => true
 	);
 
 	/**
+	 * Allow filtering an XML file.
+	 *
+	 * Filters should return either true or a string to indicate something
+	 * is wrong with the file. $this->filterMatch will store if the
+	 * file failed validation (true = failed validation).
+	 * $this->filterMatchType will contain the validation error.
+	 * $this->wellFormed will contain whether the xml file is well-formed.
+	 *
+	 * @note If multiple filters are hit, only one of them will have the
+	 *  result stored in $this->filterMatchType.
+	 *
 	 * @param string $input a filename
 	 * @param callable $filterCallback (optional)
 	 *        Function to call to do additional custom validity checks from the
@@ -76,7 +90,10 @@ class XmlTypeCheck {
 	 *        namespace, name, attributes, and text contents.
 	 *        Filter should return 'true' to toggle on $this->filterMatch
 	 * @param array $options list of additional parsing options:
-	 *        processing_instruction_handler: Callback for xml_set_processing_instruction_handler
+	 *	processing_instruction_handler: Callback for xml_set_processing_instruction_handler
+	 *        external_dtd_handler: Callback for the url of external dtd subset
+	 *        dtd_handler: Callback given the full text of the <!DOCTYPE declaration.
+	 *        require_safe_dtd: Only allow non-recursive entities in internal dtd (default true)
 	 */
 	function __construct( $input, $filterCallback = null, $options = array() ) {
 		$this->filterCallback = $filterCallback;
@@ -144,10 +161,13 @@ class XmlTypeCheck {
 			if( !$this->readNext( $reader ) ) {
 				// Hit the end of the document before any elements
 				$this->wellFormed = false;
-				return;
-			}
+						return;
+					}
 			if ( $reader->nodeType === XMLReader::PI ) {
 				$this->processingInstructionHandler( $reader->name, $reader->value );
+			}
+			if ( $reader->nodeType === XMLReader::DOC_TYPE ) {
+				$this->DTDHandler( $reader );
 			}
 		} while ( $reader->nodeType != XMLReader::ELEMENT );
 
@@ -161,7 +181,7 @@ class XmlTypeCheck {
 					);
 					if ( $this->rootElement === '' ) {
 						$this->rootElement = $name;
-					}
+			}
 					$empty = $reader->isEmptyElement;
 					$attrs = $this->getAttributesArray( $reader );
 					$this->elementOpen( $name, $attrs );
@@ -197,18 +217,23 @@ class XmlTypeCheck {
 						$reader->value
 					);
 					break;
+				case XMLReader::DOC_TYPE:
+					// We should never see a doctype after first
+					// element.
+					$this->wellFormed = false;
+					break;
 				default:
-					// One of DOC, DOC_TYPE, ENTITY, END_ENTITY,
+					// One of DOC, ENTITY, END_ENTITY,
 					// NOTATION, or XML_DECLARATION
 					// xml_parse didn't send these to the filter, so we won't.
-			}
+		}
 
 		} while ( $this->readNext( $reader ) );
 
 		if ( $this->stackDepth !== 0 ) {
 			$this->wellFormed = false;
 		} elseif ( $this->wellFormed === null ) {
-			$this->wellFormed = true;
+		$this->wellFormed = true;
 		}
 
 	}
@@ -265,10 +290,10 @@ class XmlTypeCheck {
 
 		if ( is_callable( $this->filterCallback )
 			&& call_user_func(
-				$this->filterCallback,
-				$name,
-				$attribs,
-				$data
+			$this->filterCallback,
+			$name,
+			$attribs,
+			$data
 			)
 		) {
 			// Filter hit
@@ -299,5 +324,142 @@ class XmlTypeCheck {
 				$this->filterMatch = true;
 			}
 		}
+	}
+
+	/**
+	 * Handle coming across a <!DOCTYPE declaration.
+	 *
+	 * @param XMLReader $reader Reader currently pointing at DOCTYPE node.
+	 */
+	private function DTDHandler( XMLReader $reader ) {
+		$externalCallback = $this->parserOptions['external_dtd_handler'];
+		$generalCallback = $this->parserOptions['dtd_handler'];
+		$checkIfSafe = $this->parserOptions['require_safe_dtd'];
+		if ( !$externalCallback && !$generalCallback && !$checkIfSafe ) {
+			return;
+		}
+		$dtd = $reader->readOuterXML();
+		$callbackReturn = false;
+
+		if ( $generalCallback ) {
+			$callbackReturn = call_user_func( $generalCallback, $dtd );
+		}
+		if ( $callbackReturn ) {
+			// Filter hit!
+			$this->filterMatch = true;
+			$this->filterMatchType = $callbackReturn;
+			$callbackReturn = false;
+		}
+
+		$parsedDTD = $this->parseDTD( $dtd );
+		if ( $externalCallback && isset( $parsedDTD['type'] ) ) {
+			$callbackReturn = call_user_func(
+				$externalCallback,
+				$parsedDTD['type'],
+				isset( $parsedDTD['publicid'] ) ? $parsedDTD['publicid'] : null,
+				isset( $parsedDTD['systemid'] ) ? $parsedDTD['systemid'] : null
+			);
+		}
+		if ( $callbackReturn ) {
+			// Filter hit!
+			$this->filterMatch = true;
+			$this->filterMatchType = $callbackReturn;
+			$callbackReturn = false;
+		}
+
+		if ( $checkIfSafe && isset( $parsedDTD['internal'] ) ) {
+			if ( !$this->checkDTDIsSafe( $parsedDTD['internal'] ) ) {
+				$this->wellFormed = false;
+			}
+		}
+	}
+
+	/**
+	 * Check if the internal subset of the DTD is safe.
+	 *
+	 * We whitelist an extremely restricted subset of DTD features.
+	 *
+	 * Safe is defined as:
+	 *  * Only contains entity defintions (e.g. No <!ATLIST )
+	 *  * Entity definitions are not "system" entities
+	 *  * Entity definitions are not "parameter" (i.e. %) entities
+	 *  * Entity definitions do not reference other entites except &amp;
+	 *    and quotes. Entity aliases (where the entity contains only
+	 *    another entity are allowed)
+	 *  * Entity references aren't overly long (>255 bytes).
+	 *  * <!ATTLIST svg xmlns:xlink CDATA #FIXED "http://www.w3.org/1999/xlink">
+	 *    allowed if matched exactly for compatibility with graphviz
+	 *  * Comments.
+	 *
+	 * @param string $internalSubset The internal subset of the DTD
+	 * @return bool true if safe.
+	 */
+	private function checkDTDIsSafe( $internalSubset ) {
+		$offset = 0;
+		$res = preg_match(
+			'/^(?:\s*<!ENTITY\s+\S+\s+' .
+				'(?:"(?:&[^"%&;]{1,64};|(?:[^"%&]|&amp;|&quot;){0,255})"' .
+				'|\'(?:&[^"%&;]{1,64};|(?:[^\'%&]|&amp;|&apos;){0,255})\')\s*>' .
+				'|\s*<!--(?:[^-]|-[^-])*-->' .
+				'|\s*<!ATTLIST svg xmlns:xlink CDATA #FIXED ' .
+				'"http:\/\/www.w3.org\/1999\/xlink">)*\s*$/',
+			$internalSubset
+		);
+
+		return (bool)$res;
+	}
+
+	/**
+	 * Parse DTD into parts.
+	 *
+	 * If there is an error parsing the dtd, sets wellFormed to false.
+	 *
+	 * @param $dtd string
+	 * @return array Possibly containing keys publicid, systemid, type and internal.
+	 */
+	private function parseDTD( $dtd ) {
+		$m = array();
+		$res = preg_match(
+			'/^<!DOCTYPE\s*\S+\s*' .
+			'(?:(?P<typepublic>PUBLIC)\s*' .
+				'(?:"(?P<pubquote>[^"]*)"|\'(?P<pubapos>[^\']*)\')' . // public identifer
+				'\s*"(?P<pubsysquote>[^"]*)"|\'(?P<pubsysapos>[^\']*)\'' . // system identifier
+			'|(?P<typesystem>SYSTEM)\s*' .
+				'(?:"(?P<sysquote>[^"]*)"|\'(?P<sysapos>[^\']*)\')' .
+			')?\s*' .
+			'(?:\[\s*(?P<internal>.*)\])?\s*>$/s',
+			$dtd,
+			$m
+		);
+		if ( !$res ) {
+			$this->wellFormed = false;
+			return array();
+		}
+		$parsed = array();
+		foreach ( $m as $field => $value ) {
+			if ( $value === '' || is_numeric( $field ) ) {
+				continue;
+			}
+			switch ( $field ) {
+			case 'typepublic':
+			case 'typesystem':
+				$parsed['type'] = $value;
+				break;
+			case 'pubquote':
+			case 'pubapos':
+				$parsed['publicid'] = $value;
+				break;
+			case 'pubsysquote':
+			case 'pubsysapos':
+			case 'sysquote':
+			case 'sysapos':
+				$parsed['systemid'] = $value;
+				break;
+			case 'internal':
+				$parsed['internal'] = $value;
+				break;
+			}
+		}
+		return $parsed;
 	}
 }

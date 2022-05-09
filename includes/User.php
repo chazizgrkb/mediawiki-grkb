@@ -448,8 +448,8 @@ class User {
 	 * @return String|false The corresponding username
 	 */
 	public static function whoIs( $id ) {
-		$dbr = wfGetDB( DB_SLAVE );
-		return $dbr->selectField( 'user', 'user_name', array( 'user_id' => $id ), __METHOD__ );
+		// Wikia change - @see SUS-1015
+		return self::newFromId( $id )->getName();
 	}
 
 	/**
@@ -1465,6 +1465,7 @@ class User {
 	 *
 	 * @param $action String Action to enforce; 'edit' if unspecified
 	 * @return Bool True if a rate limiter was tripped
+	 * @throws MWException
 	 */
 	public function pingLimiter( $action = 'edit' ) {
 		# Call the 'PingLimiter' hook
@@ -1490,6 +1491,7 @@ class User {
 		$id = $this->getId();
 		$ip = $this->getRequest()->getIP();
 		$userLimit = false;
+		$isNewbie = $this->isNewbie();
 
 		if( isset( $limits['anon'] ) && $id == 0 ) {
 			$keys[wfMemcKey( 'limiter', $action, 'anon' )] = $limits['anon'];
@@ -1498,13 +1500,14 @@ class User {
 		if( isset( $limits['user'] ) && $id != 0 ) {
 			$userLimit = $limits['user'];
 		}
-		if( $this->isNewbie() ) {
-			if( isset( $limits['newbie'] ) && $id != 0 ) {
-				$keys[wfMemcKey( 'limiter', $action, 'user', $id )] = $limits['newbie'];
-			}
+
+		// limits for anons and for newbie logged-in users
+		if ( $isNewbie ) {
+			// ip-based limits
 			if( isset( $limits['ip'] ) ) {
 				$keys["mediawiki:limiter:$action:ip:$ip"] = $limits['ip'];
 			}
+			// subnet-based limits
 			$matches = array();
 			if( isset( $limits['subnet'] ) && preg_match( '/^(\d+\.\d+\.\d+)\.\d+$/', $ip, $matches ) ) {
 				$subnet = $matches[1];
@@ -1520,6 +1523,12 @@ class User {
 				}
 			}
 		}
+		
+		// limits for newbie logged-in users (override all the normal user limits)
+		if ( $id !== 0 && $isNewbie && isset( $limits['newbie'] ) ) {
+			$userLimit = $limits['newbie'];
+		}
+		
 		// Set the user limit key
 		if ( $userLimit !== false ) {
 			wfDebug( __METHOD__ . ": effective user limit: $userLimit\n" );
@@ -3251,7 +3260,7 @@ class User {
 	 */
 	public function matchEditToken( $val, $salt = '', $request = null ) {
 		$sessionToken = $this->getEditToken( $salt, $request );
-		$equals = hash_equals( $sessionToken, $val );
+		$equals = !is_null( $val ) && hash_equals( $sessionToken, $val );
 		if ( !$equals ) {
 			wfDebug( "User::matchEditToken: broken session data\n" );
 		}

@@ -48,6 +48,10 @@ class ApiUndelete extends ApiBase {
 		if ( !$titleObj ) {
 			$this->dieUsageMsg( array( 'invalidtitle', $params['title'] ) );
 		}
+		
+		if ( !$titleObj->userCan( 'undelete', $this->getUser(), true ) ) {
+			$this->dieUsageMsg( 'permdenied-undelete' );
+		}
 
 		// Convert timestamps
 		if ( !isset( $params['timestamps'] ) ) {
