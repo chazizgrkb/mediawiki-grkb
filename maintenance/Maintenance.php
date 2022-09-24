@@ -648,7 +648,7 @@ abstract class Maintenance {
 			} elseif ( substr( $arg, 0, 1 ) == '-' ) {
 				# Short options
 				for ( $p = 1; $p < strlen( $arg ); $p++ ) {
-					$option = $arg { $p } ;
+					$option = $arg[$p];
 					if ( !isset( $this->mParams[$option] ) && isset( $this->mShortParamsMap[$option] ) ) {
 						$option = $this->mShortParamsMap[$option];
 					}

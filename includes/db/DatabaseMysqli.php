@@ -53,6 +53,9 @@ class DatabaseMysqli extends DatabaseMysqlBase {
 			throw new DBConnectionError( $this, "MySQLi functions missing, have you compiled PHP with the --with-mysqli option?\n" );
 		}
 
+        // PHP 8.1.0+ throws exceptions by default. Turn that off for consistency.
+        mysqli_report( MYSQLI_REPORT_OFF );
+
 		$connFlags = 0;
 		if ( $this->mFlags & DBO_SSL ) {
 			$connFlags |= MYSQLI_CLIENT_SSL;
