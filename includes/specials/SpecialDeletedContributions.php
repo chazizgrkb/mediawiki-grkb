@@ -484,7 +484,7 @@ class DeletedContributionsPage extends SpecialPage {
 
 		$f .=  Xml::openElement( 'fieldset' ) .
 			Xml::element( 'legend', array(), $this->msg( 'sp-contributions-search' )->text() ) .
-			Xml::tags( 'label', array( 'for' => 'target' ), $this->msg( 'sp-contributions-username' )->parse() ) . ' ' .
+			Xml::tags( 'label', $this->msg( 'sp-contributions-username' )->parse(), array( 'for' => 'target' ) ) . ' ' .
 			Html::input( 'target', $options['target'], 'text', array(
 				'size' => '20',
 				'required' => ''

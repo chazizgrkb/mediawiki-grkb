@@ -24,48 +24,41 @@
 // Some regex definition to "play" with IP address and IP address blocks
 
 // An IPv4 address is made of 4 bytes from x00 to xFF which is d0 to d255
-define( 'RE_IP_BYTE', '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|0?[0-9]?[0-9])' );
-define( 'RE_IP_ADD', RE_IP_BYTE . '\.' . RE_IP_BYTE . '\.' . RE_IP_BYTE . '\.' . RE_IP_BYTE );
+const RE_IP_BYTE = '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|0?[0-9]?[0-9])';
+const RE_IP_ADD = RE_IP_BYTE . '\.' . RE_IP_BYTE . '\.' . RE_IP_BYTE . '\.' . RE_IP_BYTE;
 // An IPv4 block is an IP address and a prefix (d1 to d32)
-define( 'RE_IP_PREFIX', '(3[0-2]|[12]?\d)' );
-define( 'RE_IP_BLOCK', RE_IP_ADD . '\/' . RE_IP_PREFIX );
+const RE_IP_PREFIX = '(3[0-2]|[12]?\d)';
+const RE_IP_BLOCK = RE_IP_ADD . '\/' . RE_IP_PREFIX;
 
 // An IPv6 address is made up of 8 words (each x0000 to xFFFF).
 // However, the "::" abbreviation can be used on consecutive x0000 words.
-define( 'RE_IPV6_WORD', '([0-9A-Fa-f]{1,4})' );
-define( 'RE_IPV6_PREFIX', '(12[0-8]|1[01][0-9]|[1-9]?\d)');
-define( 'RE_IPV6_ADD',
-	'(?:' . // starts with "::" (including "::")
-		':(?::|(?::' . RE_IPV6_WORD . '){1,7})' .
-	'|' . // ends with "::" (except "::")
-		RE_IPV6_WORD . '(?::' . RE_IPV6_WORD . '){0,6}::' .
-	'|' . // contains one "::" in the middle, ending in "::WORD"
-		RE_IPV6_WORD . '(?::' . RE_IPV6_WORD . '){0,5}' . '::' . RE_IPV6_WORD .
-	'|' . // contains one "::" in the middle, not ending in "::WORD" (regex for PCRE 4.0+)
-		RE_IPV6_WORD . '(?::(?P<abn>:(?P<iabn>))?' . RE_IPV6_WORD . '(?!:(?P=abn))){1,5}' .
-			':' . RE_IPV6_WORD . '(?P=iabn)' .
-		// NOTE: (?!(?P=abn)) fails iff "::" used twice; (?P=iabn) passes iff a "::" was found.
-	'|' . // contains no "::"
-		RE_IPV6_WORD . '(?::' . RE_IPV6_WORD . '){7}' .
-	')'
-	// NOTE: With PCRE 7.2+, we can combine the two '"::" in the middle' cases into:
-	//		RE_IPV6_WORD . '(?::((?(-1)|:))?' . RE_IPV6_WORD . '){1,6}(?(-2)|^)'
-	// This also improves regex concatenation by using relative references.
-);
+const RE_IPV6_WORD = '([0-9A-Fa-f]{1,4})';
+const RE_IPV6_PREFIX = '(12[0-8]|1[01][0-9]|[1-9]?\d)';
+const RE_IPV6_ADD = '(?:' . // starts with "::" (including "::")
+    ':(?::|(?::' . RE_IPV6_WORD . '){1,7})' .
+    '|' . // ends with "::" (except "::")
+    RE_IPV6_WORD . '(?::' . RE_IPV6_WORD . '){0,6}::' .
+    '|' . // contains one "::" in the middle, ending in "::WORD"
+    RE_IPV6_WORD . '(?::' . RE_IPV6_WORD . '){0,5}' . '::' . RE_IPV6_WORD .
+    '|' . // contains one "::" in the middle, not ending in "::WORD" (regex for PCRE 4.0+)
+    RE_IPV6_WORD . '(?::(?P<abn>:(?P<iabn>))?' . RE_IPV6_WORD . '(?!:(?P=abn))){1,5}' .
+    ':' . RE_IPV6_WORD . '(?P=iabn)' .
+    // NOTE: (?!(?P=abn)) fails iff "::" used twice; (?P=iabn) passes iff a "::" was found.
+    '|' . // contains no "::"
+    RE_IPV6_WORD . '(?::' . RE_IPV6_WORD . '){7}' .
+    ')';
 // An IPv6 block is an IP address and a prefix (d1 to d128)
-define( 'RE_IPV6_BLOCK', RE_IPV6_ADD . '\/' . RE_IPV6_PREFIX );
+const RE_IPV6_BLOCK = RE_IPV6_ADD . '\/' . RE_IPV6_PREFIX;
 // For IPv6 canonicalization (NOT for strict validation; these are quite lax!)
-define( 'RE_IPV6_GAP', ':(?:0+:)*(?::(?:0+:)*)?' );
-define( 'RE_IPV6_V4_PREFIX', '0*' . RE_IPV6_GAP . '(?:ffff:)?' );
+const RE_IPV6_GAP = ':(?:0+:)*(?::(?:0+:)*)?';
+const RE_IPV6_V4_PREFIX = '0*' . RE_IPV6_GAP . '(?:ffff:)?';
 
 // This might be useful for regexps used elsewhere, matches any IPv6 or IPv6 address or network
-define( 'IP_ADDRESS_STRING',
-	'(?:' .
-		RE_IP_ADD . '(?:\/' . RE_IP_PREFIX . ')?' . // IPv4
-	'|' .
-		RE_IPV6_ADD . '(?:\/' . RE_IPV6_PREFIX . ')?' . // IPv6
-	')'
-);
+const IP_ADDRESS_STRING = '(?:' .
+    RE_IP_ADD . '(?:\/' . RE_IP_PREFIX . ')?' . // IPv4
+    '|' .
+    RE_IPV6_ADD . '(?:\/' . RE_IPV6_PREFIX . ')?' . // IPv6
+    ')';
 
 /**
  * A collection of public static functions to play with IP address

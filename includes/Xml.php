@@ -101,11 +101,11 @@ class Xml {
 	 * content you have is already valid xml.
 	 *
 	 * @param $element String element name
-	 * @param $attribs array of attributes
 	 * @param $contents String content of the element
+     * @param $attribs array of attributes
 	 * @return string
 	 */
-	public static function tags( $element, $attribs = null, $contents ) {
+	public static function tags( $element, $contents, $attribs = null ) {
 		return self::openElement( $element, $attribs ) . $contents . "</$element>";
 	}
 
@@ -234,8 +234,8 @@ class Xml {
 		return array(
 			Xml::label( wfMsg('yourlanguage'), 'wpUserLanguage' ),
 			Xml::tags( 'select',
+                $options,
 				array( 'id' => 'wpUserLanguage', 'name' => 'wpUserLanguage' ),
-				$options
 			)
 		);
 
@@ -261,7 +261,7 @@ class Xml {
 	 * @return string
 	 */
 	public static function wrapClass( $text, $class, $tag = 'span', $attribs = array() ) {
-		return self::tags( $tag, array( 'class' => $class ) + $attribs, $text );
+		return self::tags( $tag, $text, array( 'class' => $class ) + $attribs );
 	}
 
 	/**
@@ -761,14 +761,14 @@ class Xml {
 		foreach( $fields as $labelmsg => $input ) {
 			$id = "mw-$labelmsg";
 			$form .= Xml::openElement( 'tr', array( 'id' => $id ) );
-			$form .= Xml::tags( 'td', array('class' => 'mw-label'), wfMsgExt( $labelmsg, array('parseinline') ) );
+			$form .= Xml::tags( 'td', wfMsgExt( $labelmsg, array('parseinline') ), array('class' => 'mw-label') );
 			$form .= Xml::openElement( 'td', array( 'class' => 'mw-input' ) ) . $input . Xml::closeElement( 'td' );
 			$form .= Xml::closeElement( 'tr' );
 		}
 
 		if( $submitLabel ) {
 			$form .= Xml::openElement( 'tr' );
-			$form .= Xml::tags( 'td', array(), '' );
+			$form .= Xml::tags( 'td', '', array() );
 			$form .= Xml::openElement( 'td', array( 'class' => 'mw-submit' ) ) . Xml::submitButton( wfMsg( $submitLabel ) ) . Xml::closeElement( 'td' );
 			$form .= Xml::closeElement( 'tr' );
 		}

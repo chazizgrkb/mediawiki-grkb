@@ -389,7 +389,7 @@ class AllmessagesTablePager extends TablePager {
 			if ( $formatted == '' ) {
 				$formatted = '&#160;';
 			}
-			$s .= Xml::tags( 'td', $this->getCellAttrs( 'am_actual', $row->am_actual ), $formatted )
+			$s .= Xml::tags( 'td', $formatted, $this->getCellAttrs( 'am_actual', $row->am_actual ) )
 				. "</tr>\n";
 		}
 		return $s;

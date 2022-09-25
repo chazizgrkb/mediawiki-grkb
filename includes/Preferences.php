@@ -1532,7 +1532,7 @@ class PreferencesForm extends HTMLForm {
 	 * @return String
 	 */
 	function wrapForm( $html ) {
-		$html = Xml::tags( 'div', array( 'id' => 'preferences' ), $html );
+		$html = Xml::tags( 'div', $html, array( 'id' => 'preferences' ) );
 
 		return parent::wrapForm( $html );
 	}
@@ -1547,7 +1547,7 @@ class PreferencesForm extends HTMLForm {
 
 		$html .= "\n" . Linker::link( $t, $this->msg( 'restoreprefs' )->escaped() );
 
-		$html = Xml::tags( 'div', array( 'class' => 'mw-prefs-buttons' ), $html );
+		$html = Xml::tags( 'div', $html, array( 'class' => 'mw-prefs-buttons' ) );
 
 		return $html;
 	}

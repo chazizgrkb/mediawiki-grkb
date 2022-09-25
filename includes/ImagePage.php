@@ -412,8 +412,8 @@ class ImagePage extends Article {
 						$options[] = Xml::option( $wgLang->formatNum( $i ), $i, $i == $page );
 					}
 					$select = Xml::tags( 'select',
-						array( 'id' => 'pageselector', 'name' => 'page' ),
-						implode( "\n", $options ) );
+						implode( "\n", $options ),
+                        array( 'id' => 'pageselector', 'name' => 'page' ) );
 
 					$wgOut->addHTML(
 						'</td><td><div class="multipageimagenavbox">' .

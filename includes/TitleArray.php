@@ -70,21 +70,21 @@ class TitleArrayFromResult extends TitleArray {
 		return $this->res->numRows();
 	}
 
-	function current() {
+	#[ReturnTypeWillChange] function current() {
 		return $this->current;
 	}
 
-	function key() {
+	#[ReturnTypeWillChange] function key() {
 		return $this->key;
 	}
 
-	function next() {
+	#[ReturnTypeWillChange] function next() {
 		$row = $this->res->next();
 		$this->setCurrent( $row );
 		$this->key++;
 	}
 
-	function rewind() {
+	#[ReturnTypeWillChange] function rewind() {
 		$this->res->rewind();
 		$this->key = 0;
 		$this->setCurrent( $this->res->current() );

@@ -159,7 +159,7 @@ class Language {
 	protected static function newFromCode( $code ) {
 		// Protect against path traversal below
 		if ( !Language::isValidCode( $code )
-			|| strcspn( $code, ":/\\\000" ) !== strlen( $code ) )
+			|| strcspn( $code ?? '', ":/\\\000" ) !== strlen( $code ?? '' ) )
 		{
 			throw new MWException( "Invalid language code \"$code\"" );
 		}
@@ -214,8 +214,8 @@ class Language {
 			// Ideally we should only allow a-zA-Z0-9-
 			// but, .+ and other chars are often used for {{int:}} hacks
 			// see bugs 37564, 37587, 36938
-			strcspn( $code, ":/\\\000&<>'\"" ) === strlen( $code )
-			&& !preg_match( Title::getTitleInvalidRegex(), $code );
+			strcspn( $code ?? '', ":/\\\000&<>'\"") === strlen( $code ?? '' )
+			&& !preg_match( Title::getTitleInvalidRegex(), $code ?? '' );
 	}
 
 	/**
@@ -228,7 +228,7 @@ class Language {
 	 * @return bool
 	 */
 	public static function isValidBuiltInCode( $code ) {
-		return preg_match( '/^[a-z0-9-]+$/i', $code );
+		return preg_match( '/^[a-z0-9-]+$/i', $code ?? '' );
 	}
 
 	/**
@@ -3536,12 +3536,12 @@ class Language {
 
 	/**
 	 * Get the name of a file for a certain language code
-	 * @param $prefix string Prepend this to the filename
 	 * @param $code string Language code
+     * @param $prefix string Prepend this to the filename
 	 * @param $suffix string Append this to the filename
 	 * @return string $prefix . $mangledCode . $suffix
 	 */
-	public static function getFileName( $prefix = 'Language', $code, $suffix = '.php' ) {
+	public static function getFileName( $code, $prefix = 'Language', $suffix = '.php' ) {
 		// Protect against path traversal
 		if ( !Language::isValidCode( $code )
 			|| strcspn( $code, ":/\\\000" ) !== strlen( $code ) )

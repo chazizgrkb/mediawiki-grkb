@@ -24,19 +24,19 @@
  * Int Number of characters in user_token field.
  * @ingroup Constants
  */
-define( 'USER_TOKEN_LENGTH', 32 );
+const USER_TOKEN_LENGTH = 32;
 
 /**
  * Int Serialized record version.
  * @ingroup Constants
  */
-define( 'MW_USER_VERSION', 8 );
+const MW_USER_VERSION = 8;
 
 /**
  * String Some punctuation to prevent editing from broken text-mangling proxies.
  * @ingroup Constants
  */
-define( 'EDIT_TOKEN_SUFFIX', '+\\' );
+const EDIT_TOKEN_SUFFIX = '+\\';
 
 /**
  * Thrown by User::setPassword() on error.
@@ -47,7 +47,7 @@ class PasswordError extends MWException {
 }
 
 /**
- * The User object encapsulates all of the user-specific settings (user_id,
+ * The User object encapsulates all the user-specific settings (user_id,
  * name, rights, password, email address, options, last login time). Client
  * classes use the getXXX() functions to access these fields. These functions
  * do all the work of determining whether the user is logged in,
@@ -1721,7 +1721,7 @@ class User {
 	}
 
 	/**
-	 * Get the user name, or the IP of an anonymous user
+	 * Get the username, or the IP of an anonymous user
 	 * @return String User's name or IP address
 	 */
 	public function getName() {

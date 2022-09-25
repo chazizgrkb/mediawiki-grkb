@@ -150,7 +150,7 @@ class ResultWrapper implements Iterator {
 	 * above may cause rows to be skipped or repeated.
 	 */
 
-	function rewind() {
+	#[ReturnTypeWillChange] function rewind() {
 		if ( $this->numRows() ) {
 			$this->db->dataSeek( $this, 0 );
 		}
@@ -161,7 +161,7 @@ class ResultWrapper implements Iterator {
 	/**
 	 * @return int
 	 */
-	function current() {
+	#[ReturnTypeWillChange] function current() {
 		if ( is_null( $this->currentRow ) ) {
 			$this->next();
 		}
@@ -171,14 +171,14 @@ class ResultWrapper implements Iterator {
 	/**
 	 * @return int
 	 */
-	function key() {
+	#[ReturnTypeWillChange] function key() {
 		return $this->pos;
 	}
 
 	/**
 	 * @return int
 	 */
-	function next() {
+	#[ReturnTypeWillChange] function next() {
 		$this->pos++;
 		$this->currentRow = $this->fetchObject();
 		return $this->currentRow;
@@ -187,7 +187,7 @@ class ResultWrapper implements Iterator {
 	/**
 	 * @return bool
 	 */
-	function valid() {
+	#[ReturnTypeWillChange] function valid() {
 		return $this->current() !== false;
 	}
 }

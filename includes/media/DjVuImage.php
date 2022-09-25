@@ -358,16 +358,16 @@ EOT;
 
 			if ( preg_match( '/^ *INFO *\[\d*\] *DjVu *(\d+)x(\d+), *\w*, *(\d+) *dpi, *gamma=([0-9.-]+)/', $line, $m ) ) {
 				$xml .= Xml::tags( 'OBJECT',
-					array(
-						#'data' => '',
-						#'type' => 'image/x.djvu',
-						'height' => $m[2],
-						'width' => $m[1],
-						#'usemap' => '',
-					),
 					"\n" .
 					Xml::element( 'PARAM', array( 'name' => 'DPI', 'value' => $m[3] ) ) . "\n" .
-					Xml::element( 'PARAM', array( 'name' => 'GAMMA', 'value' => $m[4] ) ) . "\n"
+					Xml::element( 'PARAM', array( 'name' => 'GAMMA', 'value' => $m[4] ) ) . "\n",
+                    array(
+                        #'data' => '',
+                        #'type' => 'image/x.djvu',
+                        'height' => $m[2],
+                        'width' => $m[1],
+                        #'usemap' => '',
+                    ),
 				) . "\n";
 				return true;
 			}

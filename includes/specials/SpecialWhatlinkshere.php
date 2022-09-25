@@ -325,7 +325,7 @@ class SpecialWhatLinksHere extends SpecialPage {
 
 		return $notClose ?
 			Xml::openElement( 'li' ) . "$link $propsText $dirmark $wlh\n" :
-			Xml::tags( 'li', null, "$link $propsText $dirmark $wlh" ) . "\n";
+			Xml::tags( 'li',  "$link $propsText $dirmark $wlh" ) . "\n";
 	}
 
 	protected function listEnd() {

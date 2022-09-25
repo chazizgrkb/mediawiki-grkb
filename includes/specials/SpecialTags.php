@@ -44,10 +44,10 @@ class SpecialTags extends SpecialPage {
 		$out->wrapWikiMsg( "<div class='mw-tags-intro'>\n$1\n</div>", 'tags-intro' );
 
 		// Write the headers
-		$html = Xml::tags( 'tr', null, Xml::tags( 'th', null, wfMsgExt( 'tags-tag', 'parseinline' ) ) .
-				Xml::tags( 'th', null, wfMsgExt( 'tags-display-header', 'parseinline' ) ) .
-				Xml::tags( 'th', null, wfMsgExt( 'tags-description-header', 'parseinline' ) ) .
-				Xml::tags( 'th', null, wfMsgExt( 'tags-hitcount-header', 'parseinline' ) )
+		$html = Xml::tags( 'tr', Xml::tags( 'th',  wfMsgExt( 'tags-tag', 'parseinline' ) ) .
+				Xml::tags( 'th',  wfMsgExt( 'tags-display-header', 'parseinline' ) ) .
+				Xml::tags( 'th',  wfMsgExt( 'tags-description-header', 'parseinline' ) ) .
+				Xml::tags( 'th',  wfMsgExt( 'tags-hitcount-header', 'parseinline' ) )
 			);
 		$dbr = wfGetDB( DB_SLAVE );
 		$res = $dbr->select( 'change_tag', array( 'ct_tag', 'count(*) AS hitcount' ),
@@ -61,7 +61,7 @@ class SpecialTags extends SpecialPage {
 			$html .= $this->doTagRow( $tag, 0 );
 		}
 
-		$out->addHTML( Xml::tags( 'table', array( 'class' => 'wikitable mw-tags-table' ), $html ) );
+		$out->addHTML( Xml::tags( 'table', $html, array( 'class' => 'wikitable mw-tags-table' ) ) );
 	}
 
 	function doTagRow( $tag, $hitcount ) {
@@ -72,23 +72,23 @@ class SpecialTags extends SpecialPage {
 		}
 
 		$newRow = '';
-		$newRow .= Xml::tags( 'td', null, Xml::element( 'tt', null, $tag ) );
+		$newRow .= Xml::tags( 'td', Xml::element( 'tt', null, $tag ) );
 
 		$disp = ChangeTags::tagDescription( $tag );
 		$disp .= ' (' . Linker::link( Title::makeTitle( NS_MEDIAWIKI, "Tag-$tag" ), wfMsgHtml( 'tags-edit' ) ) . ')';
-		$newRow .= Xml::tags( 'td', null, $disp );
+		$newRow .= Xml::tags( 'td', $disp );
 
 		$msg = wfMessage( "tag-$tag-description" );
 		$desc = !$msg->exists() ? '' : $msg->parse();
 		$desc .= ' (' . Linker::link( Title::makeTitle( NS_MEDIAWIKI, "Tag-$tag-description" ), wfMsgHtml( 'tags-edit' ) ) . ')';
-		$newRow .= Xml::tags( 'td', null, $desc );
+		$newRow .= Xml::tags( 'td', $desc );
 
 		$hitcount = wfMsgExt( 'tags-hitcount', array( 'parsemag' ), $this->getLanguage()->formatNum( $hitcount ) );
 		$hitcount = Linker::link( SpecialPage::getTitleFor( 'Recentchanges' ), $hitcount, array(), array( 'tagfilter' => $tag ) );
-		$newRow .= Xml::tags( 'td', null, $hitcount );
+		$newRow .= Xml::tags( 'td', $hitcount );
 
 		$doneTags[] = $tag;
 
-		return Xml::tags( 'tr', null, $newRow ) . "\n";
+		return Xml::tags( 'tr',  $newRow ) . "\n";
 	}
 }

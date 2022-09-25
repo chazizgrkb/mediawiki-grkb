@@ -19,7 +19,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
  * PHP extensions may be included here.
  */
  
- // FIXME: We support 7.0.0(?) and up, not 5.2.3. -grkb 5/9/2022
+ // FIXME: We support 8.x.x and up, not 5.2.3. -grkb 9/24/2022
 
 if( !function_exists( 'iconv' ) ) {
 	/** @codeCoverageIgnore */

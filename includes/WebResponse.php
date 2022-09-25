@@ -32,10 +32,9 @@ class WebResponse {
 	 * header()
 	 * @param $string String: header to output
 	 * @param $replace Bool: replace current similar header
-	 * @param $http_response_code null|int Forces the HTTP response code to the specified value.
 	 */
-	public function header( $string, $replace = true, $http_response_code = null ) {
-		header( $string, $replace, $http_response_code );
+	public function header( $string, $replace = true ) {
+		header( $string, $replace );
 	}
 
 	/**

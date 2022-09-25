@@ -839,10 +839,10 @@ abstract class DatabaseBase implements DatabaseType {
 		global $wgUser;
 		if ( is_object( $wgUser ) && $wgUser->isItemLoaded( 'name' ) ) {
 			$userName = $wgUser->getName();
-			if ( mb_strlen( $userName ) > 15 ) {
+			if ( mb_strlen( $userName ?? '' ) > 15 ) {
 				$userName = mb_substr( $userName, 0, 15 ) . '...';
 			}
-			$userName = str_replace( '/', '', $userName );
+			$userName = str_replace( '/', '', $userName ?? '' );
 		} else {
 			$userName = '';
 		}

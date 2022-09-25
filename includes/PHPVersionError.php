@@ -1,4 +1,7 @@
 <?php
+
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * Display something vaguely comprehensible in the event of a totally unrecoverable error.
  * Does not assume access to *anything*; no globals, no autloader, no database, no localisation.
@@ -16,10 +19,10 @@
  * @note Since we can't rely on anything, the minimum PHP versions and MW current
  * version are hardcoded here
  */
-function wfPHPVersionError( $type ){
+#[NoReturn] function wfPHPVersionError($type ){
 	$mwVersion = '1.19';
 	$phpVersion = PHP_VERSION;
-	$message = "MediaWiki $mwVersion requires at least PHP version 5.2.3, you are using PHP $phpVersion.";
+	$message = "MediaWikiGRKB $mwVersion requires at least PHP 7 (not too sure), you are using PHP $phpVersion.";
 	if( $type == 'index.php' ) {
 		$encLogo = htmlspecialchars(
 			str_replace( '//', '/', pathinfo( $_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME ) . '/'
@@ -36,12 +39,10 @@ function wfPHPVersionError( $type ){
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 	<head>
-		<title>MediaWiki {$mwVersion}</title>
+		<title>MediaWikiGRKB {$mwVersion}</title>
 		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
 		<style type='text/css' media='screen'>
 			body {
-				color: #000;
-				background-color: #fff;
 				font-family: sans-serif;
 				padding: 2em;
 				text-align: center;
@@ -56,16 +57,13 @@ function wfPHPVersionError( $type ){
 		</style>
 	</head>
 	<body>
-		<img src="{$encLogo}" alt='The MediaWiki logo' />
-		<h1>MediaWiki {$mwVersion} internal error</h1>
+		<h1>MediaWikiGRKB {$mwVersion} internal error</h1>
 		<div class='error'>
 		<p>
 			{$message}
 		</p>
 		<p>
 			Please consider <a href="http://www.php.net/downloads.php">upgrading your copy of PHP</a>.
-			PHP versions less than 5.3.0 are no longer supported by the PHP Group and will not receive
-			security or bugfix updates.
 		</p>
 		<p>
 			If for some reason you are unable to upgrade your PHP version, you will need to

@@ -423,7 +423,7 @@ class SpecialRevisionDelete extends UnlistedSpecialPage {
 					array(),
 					array( 'action' => 'edit' )
 				);
-				$out .= Xml::tags( 'p', array( 'class' => 'mw-revdel-editreasons' ), $link ) . "\n";
+				$out .= Xml::tags( 'p', $link, array( 'class' => 'mw-revdel-editreasons' ) ) . "\n";
 			}
 		}
 		$this->getOutput()->addHTML( $out );
@@ -461,7 +461,7 @@ class SpecialRevisionDelete extends UnlistedSpecialPage {
 				$innerHTML = Xml::checkLabel( wfMsg($message), $name, $name, $bitfield & $field );
 				if( $field == Revision::DELETED_RESTRICTED )
 					$innerHTML = "<b>$innerHTML</b>";
-				$line = Xml::tags( 'td', array( 'class' => 'mw-input' ), $innerHTML );
+				$line = Xml::tags( 'td', $innerHTML, array( 'class' => 'mw-input' ), );
 				$html .= "<tr>$line</tr>\n";
 			}
 		// Otherwise, use tri-state radios

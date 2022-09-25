@@ -126,12 +126,12 @@ class CategoryPager extends AlphabeticPager {
 		global $wgScript;
 
 		return
-			Xml::tags( 'form', array( 'method' => 'get', 'action' => $wgScript ),
+			Xml::tags( 'form',
 				Html::hidden( 'title', $this->getTitle()->getPrefixedText() ) .
 				Xml::fieldset( $this->msg( 'categories' )->text(),
 					Xml::inputLabel( $this->msg( 'categoriesfrom' )->text(),
 						'from', 'from', 20, $from ) .
 					' ' .
-					Xml::submitButton( $this->msg( 'allpagessubmit' )->text() ) ) );
+					Xml::submitButton( $this->msg( 'allpagessubmit' )->text() ) ), array( 'method' => 'get', 'action' => $wgScript ) );
 	}
 }

@@ -136,7 +136,7 @@ class SpecialStatistics extends SpecialPage {
 	 */
 	private function getPageStats() {
 		return Xml::openElement( 'tr' ) .
-			Xml::tags( 'th', array( 'colspan' => '2' ), wfMsgExt( 'statistics-header-pages', array( 'parseinline' ) ) ) .
+			Xml::tags( 'th', wfMsgExt( 'statistics-header-pages', array( 'parseinline' ) ), array( 'colspan' => '2' ) ) .
 			Xml::closeElement( 'tr' ) .
 				$this->formatRow( Linker::linkKnown( SpecialPage::getTitleFor( 'Allpages' ),
 						wfMsgExt( 'statistics-articles', array( 'parseinline' ) ) ),
@@ -153,7 +153,7 @@ class SpecialStatistics extends SpecialPage {
 	}
 	private function getEditStats() {
 		return Xml::openElement( 'tr' ) .
-			Xml::tags( 'th', array( 'colspan' => '2' ), wfMsgExt( 'statistics-header-edits', array( 'parseinline' ) ) ) .
+			Xml::tags( 'th', wfMsgExt( 'statistics-header-edits', array( 'parseinline' ) ), array( 'colspan' => '2' ) ) .
 			Xml::closeElement( 'tr' ) .
 				$this->formatRow( wfMsgExt( 'statistics-edits', array( 'parseinline' ) ),
 						$this->getLanguage()->formatNum( $this->edits ),
@@ -166,7 +166,7 @@ class SpecialStatistics extends SpecialPage {
 	private function getUserStats() {
 		global $wgActiveUserDays;
 		return Xml::openElement( 'tr' ) .
-			Xml::tags( 'th', array( 'colspan' => '2' ), wfMsgExt( 'statistics-header-users', array( 'parseinline' ) ) ) .
+			Xml::tags( 'th', wfMsgExt( 'statistics-header-users', array( 'parseinline' ) ), array( 'colspan' => '2' ) ) .
 			Xml::closeElement( 'tr' ) .
 				$this->formatRow( wfMsgExt( 'statistics-users', array( 'parseinline' ) ),
 						$this->getLanguage()->formatNum( $this->users ),
@@ -229,7 +229,7 @@ class SpecialStatistics extends SpecialPage {
 
 	private function getViewsStats() {
 		return Xml::openElement( 'tr' ) .
-			Xml::tags( 'th', array( 'colspan' => '2' ), wfMsgExt( 'statistics-header-views', array( 'parseinline' ) ) ) .
+			Xml::tags( 'th', wfMsgExt( 'statistics-header-views', array( 'parseinline' ) ), array( 'colspan' => '2' ) ) .
 			Xml::closeElement( 'tr' ) .
 				$this->formatRow( wfMsgExt( 'statistics-views-total', array( 'parseinline' ) ),
 					$this->getLanguage()->formatNum( $this->views ),
@@ -262,7 +262,7 @@ class SpecialStatistics extends SpecialPage {
 			);
 			if( $res->numRows() > 0 ) {
 				$text .= Xml::openElement( 'tr' );
-				$text .= Xml::tags( 'th', array( 'colspan' => '2' ), wfMsgExt( 'statistics-mostpopular', array( 'parseinline' ) ) );
+				$text .= Xml::tags( 'th', wfMsgExt( 'statistics-mostpopular', array( 'parseinline' ) ), array( 'colspan' => '2' ) );
 				$text .= Xml::closeElement( 'tr' );
 				foreach ( $res as $row ) {
 					$title = Title::makeTitleSafe( $row->page_namespace, $row->page_title );
@@ -282,7 +282,7 @@ class SpecialStatistics extends SpecialPage {
 			return '';
 
 		$return = Xml::openElement( 'tr' ) .
-			Xml::tags( 'th', array( 'colspan' => '2' ), wfMsgExt( 'statistics-header-hooks', array( 'parseinline' ) ) ) .
+			Xml::tags( 'th', wfMsgExt( 'statistics-header-hooks', array( 'parseinline' ) ), array( 'colspan' => '2' ) ) .
 			Xml::closeElement( 'tr' );
 
 		foreach( $stats as $name => $number ) {

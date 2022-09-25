@@ -445,7 +445,7 @@ class UserrightsPage extends SpecialPage {
 			wfMessage( 'editinguser' )->params( wfEscapeWikiText( $user->getName() ) )->rawParams( $userToolLinks )->parse() .
 			wfMessage( 'userrights-groups-help', $user->getName() )->parse() .
 			$grouplist .
-			Xml::tags( 'p', null, $this->groupCheckboxes( $groups, $user ) ) .
+			Xml::tags( 'p',  $this->groupCheckboxes( $groups, $user ) ) .
 			Xml::openElement( 'table', array( 'border' => '0', 'id' => 'mw-userrights-table-outer' ) ) .
 				"<tr>
 					<td class='mw-label'>" .
@@ -555,7 +555,7 @@ class UserrightsPage extends SpecialPage {
 				$checkboxHtml = Xml::checkLabel( $text, "wpGroup-" . $group,
 					"wpGroup-" . $group, $checkbox['set'], $attr );
 				$ret .= "\t\t" . ( $checkbox['disabled']
-					? Xml::tags( 'span', array( 'class' => 'mw-userrights-disabled' ), $checkboxHtml )
+					? Xml::tags( 'span', $checkboxHtml, array( 'class' => 'mw-userrights-disabled' ) )
 					: $checkboxHtml
 				) . "<br />\n";
 			}

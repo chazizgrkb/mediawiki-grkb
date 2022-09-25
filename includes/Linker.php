@@ -634,14 +634,14 @@ class Linker {
 	 * Make HTML for a thumbnail including image, border and caption
 	 * @param $title Title object
 	 * @param $file File object or false if it doesn't exist
+     * @param $alt String
 	 * @param $label String
-	 * @param $alt String
 	 * @param $align String
 	 * @param $params Array
 	 * @param $framed Boolean
 	 * @param $manualthumb String
 	 */
-	public static function makeThumbLinkObj( Title $title, $file, $label = '', $alt,
+	public static function makeThumbLinkObj( Title $title, $file, $alt, $label = '',
 		$align = 'right', $params = array(), $framed = false , $manualthumb = "" )
 	{
 		$frameParams = array(

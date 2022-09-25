@@ -29,14 +29,14 @@ class ChangeTags {
 		foreach( $tags as $tag ) {
 			$displayTags[] = Xml::tags(
 				'span',
-				array( 'class' => 'mw-tag-marker ' .
-								Sanitizer::escapeClass( "mw-tag-marker-$tag" ) ),
-				self::tagDescription( $tag )
+				self::tagDescription( $tag ),
+                array( 'class' => 'mw-tag-marker ' .
+                    Sanitizer::escapeClass( "mw-tag-marker-$tag" ) ),
 			);
 			$classes[] = Sanitizer::escapeClass( "mw-tag-$tag" );
 		}
 		$markers = '(' . implode( ', ', $displayTags ) . ')';
-		$markers = Xml::tags( 'span', array( 'class' => 'mw-tag-markers' ), $markers );
+		$markers = Xml::tags( 'span', $markers, array( 'class' => 'mw-tag-markers' ) );
 
 		return array( $markers, $classes );
 	}
@@ -219,7 +219,7 @@ class ChangeTags {
 		$html = implode( '&#160;', $data );
 		$html .= "\n" . Xml::element( 'input', array( 'type' => 'submit', 'value' => wfMsg( 'tag-filter-submit' ) ) );
 		$html .= "\n" . Html::hidden( 'title', $title->getPrefixedText() );
-		$html = Xml::tags( 'form', array( 'action' => $title->getLocalURL(), 'method' => 'get' ), $html );
+		$html = Xml::tags( 'form', $html, array( 'action' => $title->getLocalURL(), 'method' => 'get' ) );
 
 		return $html;
 	}

@@ -268,7 +268,7 @@ class SkinTemplate extends Skin {
 		*/
 		$tpl->set( 'searchaction', $this->escapeSearchLink() );
 		$tpl->set( 'searchtitle', SpecialPage::getTitleFor( 'Search' )->getPrefixedDBKey() );
-		$tpl->set( 'search', trim( $request->getVal( 'search' ) ) );
+		$tpl->set( 'search', trim( $request->getVal( 'search' ) ?? '' )  );
 		$tpl->setRef( 'stylepath', $wgStylePath );
 		$tpl->setRef( 'articlepath', $wgArticlePath );
 		$tpl->setRef( 'scriptpath', $wgScriptPath );

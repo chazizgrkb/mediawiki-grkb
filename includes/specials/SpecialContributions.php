@@ -407,13 +407,13 @@ class SpecialContributions extends SpecialPage {
 
 		if ( $tagFilter ) {
 			$filterSelection =
-				Xml::tags( 'td', array( 'class' => 'mw-label' ), array_shift( $tagFilter ) ) .
-				Xml::tags( 'td', array( 'class' => 'mw-input' ), implode( '&#160', $tagFilter ) );
+				Xml::tags( 'td', array_shift( $tagFilter ), array( 'class' => 'mw-label' ) ) .
+				Xml::tags( 'td', implode( '&#160', $tagFilter ), array( 'class' => 'mw-input' ) );
 		} else {
-			$filterSelection = Xml::tags( 'td', array( 'colspan' => 2 ), '' );
+			$filterSelection = Xml::tags( 'td', '', array( 'colspan' => 2 ) );
 		}
 
-		$targetSelection = Xml::tags( 'td', array( 'colspan' => 2 ),
+		$targetSelection = Xml::tags( 'td',
 			Xml::radioLabel(
 				$this->msg( 'sp-contributions-newbies' )->text(),
 				'contribs',
@@ -437,18 +437,18 @@ class SpecialContributions extends SpecialPage {
 				array( 'size' => '20', 'required' => '', 'class' => 'mw-input' ) +
 					( $this->opts['target'] ? array() : array( 'autofocus' )
 				)
-			) . ' '
+			) . ' ', array( 'colspan' => 2 )
 		) ;
 
 		$namespaceSelection =
-			Xml::tags( 'td', array( 'class' => 'mw-label' ),
+			Xml::tags( 'td',
 				Xml::label(
 					$this->msg( 'namespace' )->text(),
 					'namespace',
 					''
-				)
+				), array( 'class' => 'mw-label' ),
 			) .
-			Xml::tags( 'td', null,
+			Xml::tags( 'td',
 				Xml::namespaceSelector( $this->opts['namespace'], '' ) . '&#160;' .
 				Html::rawElement( 'span', array( 'style' => 'white-space: nowrap' ),
 					Xml::checkLabel(
@@ -470,7 +470,7 @@ class SpecialContributions extends SpecialPage {
 				)
 			) ;
 
-		$extraOptions = Xml::tags( 'td', array( 'colspan' => 2 ),
+		$extraOptions = Xml::tags( 'td',
 			Html::rawElement( 'span', array( 'style' => 'white-space: nowrap' ),
 				Xml::checkLabel(
 					$this->msg( 'history-show-deleted' )->text(),
@@ -488,10 +488,10 @@ class SpecialContributions extends SpecialPage {
 					$this->opts['topOnly'],
 					array( 'class' => 'mw-input' )
 				)
-			)
+			), array( 'colspan' => 2 )
 		) ;
 
-		$dateSelectionAndSubmit = Xml::tags( 'td', array( 'colspan' => 2 ),
+		$dateSelectionAndSubmit = Xml::tags( 'td',
 			Xml::dateMenu(
 				$this->opts['year'],
 				$this->opts['month']
@@ -499,7 +499,7 @@ class SpecialContributions extends SpecialPage {
 			Xml::submitButton(
 				$this->msg( 'sp-contributions-submit' )->text(),
 				array( 'class' => 'mw-submit' )
-			)
+			), array( 'colspan' => 2 )
 		) ;
 
 		$form .=

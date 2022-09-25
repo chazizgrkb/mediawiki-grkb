@@ -891,7 +891,7 @@ class SpecialSearch extends SpecialPage {
 				array( 'cellpadding' => 0, 'cellspacing' => 0, 'border' => 0 )
 			);
 			for( $j = $i; $j < $i + 4 && $j < $numRows; $j++ ) {
-				$namespaceTables .= Xml::tags( 'tr', null, $rows[$j] );
+				$namespaceTables .= Xml::tags( 'tr', $rows[$j] );
 			}
 			$namespaceTables .= Xml::closeElement( 'table' );
 		}
@@ -921,7 +921,6 @@ class SpecialSearch extends SpecialPage {
 			Xml::tags( 'h4', null, wfMsgExt( 'powersearch-ns', array( 'parseinline' ) ) ) .
 			Xml::tags(
 				'div',
-				array( 'id' => 'mw-search-togglebox' ),
 				Xml::label( wfMsg( 'powersearch-togglelabel' ), 'mw-search-togglelabel' ) .
 					Xml::element(
 						'input',
@@ -938,7 +937,8 @@ class SpecialSearch extends SpecialPage {
 							'id' => 'mw-search-togglenone',
 							'value' => wfMsg( 'powersearch-togglenone' )
 						)
-					)
+					),
+                array( 'id' => 'mw-search-togglebox' ),
 			) .
 			Xml::element( 'div', array( 'class' => 'divider' ), '', false ) .
 			implode( Xml::element( 'div', array( 'class' => 'divider' ), '', false ), $showSections ) .
@@ -1028,16 +1028,16 @@ class SpecialSearch extends SpecialPage {
 				$lang->commaList( $profile['namespace-messages'] ) : null;
 			$out .= Xml::tags(
 				'li',
-				array(
-					'class' => $this->profile === $id ? 'current' : 'normal'
-				),
 				$this->makeSearchLink(
 					$bareterm,
 					array(),
 					wfMsg( $profile['message'] ),
 					wfMsg( $profile['tooltip'], $tooltipParam ),
 					$profile['parameters']
-				)
+				),
+                array(
+                    'class' => $this->profile === $id ? 'current' : 'normal'
+                ),
 			);
 		}
 		$out .= Xml::closeElement( 'ul' );
@@ -1065,8 +1065,9 @@ class SpecialSearch extends SpecialPage {
 					$lang->formatNum( $resultsShown )
 				);
 			}
-			$out .= Xml::tags( 'div', array( 'class' => 'results-info' ),
-				Xml::tags( 'ul', null, Xml::tags( 'li', null, $top ) )
+			$out .= Xml::tags( 'div',
+				Xml::tags( 'ul', Xml::tags( 'li', $top ) ),
+                array( 'class' => 'results-info' )
 			);
 		}
 

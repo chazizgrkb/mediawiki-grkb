@@ -54,7 +54,7 @@ abstract class Action {
 	 * @param $overrides Array
 	 * @return bool|null|string
 	 */
-	private final static function getClass( $action, array $overrides ) {
+	private static function getClass($action, array $overrides ) {
 		global $wgActions;
 		$action = strtolower( $action );
 

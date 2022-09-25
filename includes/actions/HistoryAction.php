@@ -633,7 +633,7 @@ class HistoryPager extends ReverseChronologicalPager {
 			$attribs['class'] = implode( ' ', $classes );
 		}
 
-		return Xml::tags( 'li', $attribs, $s ) . "\n";
+		return Xml::tags( 'li', $s, $attribs ) . "\n";
 	}
 
 	/**

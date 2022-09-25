@@ -9,45 +9,40 @@
  * @file
  */
 
-/**
- * Version constants for the benefit of extensions
- */
-define( 'MW_SPECIALPAGE_VERSION', 2 );
-
 /**@{
  * Database related constants
  */
-define( 'DBO_DEBUG', 1 );
-define( 'DBO_NOBUFFER', 2 );
-define( 'DBO_IGNORE', 4 );
-define( 'DBO_TRX', 8 );
-define( 'DBO_DEFAULT', 16 );
-define( 'DBO_PERSISTENT', 32 );
-define( 'DBO_SYSDBA', 64 ); //for oracle maintenance
-define( 'DBO_DDLMODE', 128 ); // when using schema files: mostly for Oracle
-define( 'DBO_SSL', 256 );
-define( 'DBO_COMPRESS', 512 );
+const DBO_DEBUG = 1;
+const DBO_NOBUFFER = 2;
+const DBO_IGNORE = 4;
+const DBO_TRX = 8;
+const DBO_DEFAULT = 16;
+const DBO_PERSISTENT = 32;
+const DBO_SYSDBA = 64; //for oracle maintenance
+const DBO_DDLMODE = 128; // when using schema files: mostly for Oracle
+const DBO_SSL = 256;
+const DBO_COMPRESS = 512;
 /**@}*/
 
 /**@{
  * Valid database indexes
  * Operation-based indexes
  */
-define( 'DB_SLAVE', -1 );     # Read from the slave (or only server)
-define( 'DB_MASTER', -2 );    # Write to master (or only server)
-define( 'DB_LAST', -3 );     # Whatever database was used last
+const DB_SLAVE = -1;     # Read from the slave (or only server)
+const DB_MASTER = -2;    # Write to master (or only server)
+const DB_LAST = -3;     # Whatever database was used last
 /**@}*/
 
 # Obsolete aliases
-define( 'DB_READ', -1 );
-define( 'DB_WRITE', -2 );
+const DB_READ = -1;
+const DB_WRITE = -2;
 
 
 /**@{
  * Virtual namespaces; don't appear in the page database
  */
-define( 'NS_MEDIA', -2 );
-define( 'NS_SPECIAL', -1 );
+const NS_MEDIA = -2;
+const NS_SPECIAL = -1;
 /**@}*/
 
 /**@{
@@ -58,22 +53,22 @@ define( 'NS_SPECIAL', -1 );
  * DO NOT Change integer values as they are most probably hardcoded everywhere
  * see bug #696 which talked about that.
  */
-define( 'NS_MAIN', 0 );
-define( 'NS_TALK', 1 );
-define( 'NS_USER', 2 );
-define( 'NS_USER_TALK', 3 );
-define( 'NS_PROJECT', 4 );
-define( 'NS_PROJECT_TALK', 5 );
-define( 'NS_FILE', 6 );
-define( 'NS_FILE_TALK', 7 );
-define( 'NS_MEDIAWIKI', 8 );
-define( 'NS_MEDIAWIKI_TALK', 9 );
-define( 'NS_TEMPLATE', 10 );
-define( 'NS_TEMPLATE_TALK', 11 );
-define( 'NS_HELP', 12 );
-define( 'NS_HELP_TALK', 13 );
-define( 'NS_CATEGORY', 14 );
-define( 'NS_CATEGORY_TALK', 15 );
+const NS_MAIN = 0;
+const NS_TALK = 1;
+const NS_USER = 2;
+const NS_USER_TALK = 3;
+const NS_PROJECT = 4;
+const NS_PROJECT_TALK = 5;
+const NS_FILE = 6;
+const NS_FILE_TALK = 7;
+const NS_MEDIAWIKI = 8;
+const NS_MEDIAWIKI_TALK = 9;
+const NS_TEMPLATE = 10;
+const NS_TEMPLATE_TALK = 11;
+const NS_HELP = 12;
+const NS_HELP_TALK = 13;
+const NS_CATEGORY = 14;
+const NS_CATEGORY_TALK = 15;
 
 /**
  * NS_IMAGE and NS_IMAGE_TALK are the pre-v1.14 names for NS_FILE and
@@ -83,54 +78,54 @@ define( 'NS_CATEGORY_TALK', 15 );
  * versions, either stick to the old names or define the new constants
  * yourself, if they're not defined already.
  */
-define( 'NS_IMAGE', NS_FILE );
-define( 'NS_IMAGE_TALK', NS_FILE_TALK );
+const NS_IMAGE = NS_FILE;
+const NS_IMAGE_TALK = NS_FILE_TALK;
 /**@}*/
 
 /**@{
  * Cache type
  */
-define( 'CACHE_ANYTHING', -1 );  // Use anything, as long as it works
-define( 'CACHE_NONE', 0 );       // Do not cache
-define( 'CACHE_DB', 1 );         // Store cache objects in the DB
-define( 'CACHE_MEMCACHED', 2 );  // MemCached, must specify servers in $wgMemCacheServers
-define( 'CACHE_ACCEL', 3 );      // APC, XCache or WinCache
-define( 'CACHE_DBA', 4 );        // Use PHP's DBA extension to store in a DBM-style database
+const CACHE_ANYTHING = -1;  // Use anything, as long as it works
+const CACHE_NONE = 0;       // Do not cache
+const CACHE_DB = 1;         // Store cache objects in the DB
+const CACHE_MEMCACHED = 2;  // MemCached, must specify servers in $wgMemCacheServers
+const CACHE_ACCEL = 3;      // APC, XCache or WinCache
+const CACHE_DBA = 4;        // Use PHP's DBA extension to store in a DBM-style database
 /**@}*/
 
 /**@{
  * Media types.
  * This defines constants for the value returned by File::getMediaType()
  */
-define( 'MEDIATYPE_UNKNOWN',    'UNKNOWN' );     // unknown format
-define( 'MEDIATYPE_BITMAP',     'BITMAP' );      // some bitmap image or image source (like psd, etc). Can't scale up.
-define( 'MEDIATYPE_DRAWING',    'DRAWING' );     // some vector drawing (SVG, WMF, PS, ...) or image source (oo-draw, etc). Can scale up.
-define( 'MEDIATYPE_AUDIO',      'AUDIO' );       // simple audio file (ogg, mp3, wav, midi, whatever)
-define( 'MEDIATYPE_VIDEO',      'VIDEO' );       // simple video file (ogg, mpg, etc; no not include formats here that may contain executable sections or scripts!)
-define( 'MEDIATYPE_MULTIMEDIA', 'MULTIMEDIA' );  // Scriptable Multimedia (flash, advanced video container formats, etc)
-define( 'MEDIATYPE_OFFICE',     'OFFICE' );      // Office Documents, Spreadsheets (office formats possibly containing apples, scripts, etc)
-define( 'MEDIATYPE_TEXT',       'TEXT' );        // Plain text (possibly containing program code or scripts)
-define( 'MEDIATYPE_EXECUTABLE', 'EXECUTABLE' );  // binary executable
-define( 'MEDIATYPE_ARCHIVE',    'ARCHIVE' );     // archive file (zip, tar, etc)
+const MEDIATYPE_UNKNOWN = 'UNKNOWN';     // unknown format
+const MEDIATYPE_BITMAP = 'BITMAP';      // some bitmap image or image source (like psd, etc). Can't scale up.
+const MEDIATYPE_DRAWING = 'DRAWING';     // some vector drawing (SVG, WMF, PS, ...) or image source (oo-draw, etc). Can scale up.
+const MEDIATYPE_AUDIO = 'AUDIO';       // simple audio file (ogg, mp3, wav, midi, whatever)
+const MEDIATYPE_VIDEO = 'VIDEO';       // simple video file (ogg, mpg, etc; no not include formats here that may contain executable sections or scripts!)
+const MEDIATYPE_MULTIMEDIA = 'MULTIMEDIA';  // Scriptable Multimedia (flash, advanced video container formats, etc)
+const MEDIATYPE_OFFICE = 'OFFICE';      // Office Documents, Spreadsheets (office formats possibly containing apples, scripts, etc)
+const MEDIATYPE_TEXT = 'TEXT';        // Plain text (possibly containing program code or scripts)
+const MEDIATYPE_EXECUTABLE = 'EXECUTABLE';  // binary executable
+const MEDIATYPE_ARCHIVE = 'ARCHIVE';     // archive file (zip, tar, etc)
 /**@}*/
 
 /**@{
  * Antivirus result codes, for use in $wgAntivirusSetup.
  */
-define( 'AV_NO_VIRUS', 0 );  #scan ok, no virus found
-define( 'AV_VIRUS_FOUND', 1 );  #virus found!
-define( 'AV_SCAN_ABORTED', -1 );  #scan aborted, the file is probably imune
-define( 'AV_SCAN_FAILED', false );  #scan failed (scanner not found or error in scanner)
+const AV_NO_VIRUS = 0;  #scan ok, no virus found
+const AV_VIRUS_FOUND = 1;  #virus found!
+const AV_SCAN_ABORTED = -1;  #scan aborted, the file is probably imune
+const AV_SCAN_FAILED = false;  #scan failed (scanner not found or error in scanner)
 /**@}*/
 
 /**@{
  * Anti-lock flags
  * See DefaultSettings.php for a description
  */
-define( 'ALF_PRELOAD_LINKS', 1 );
-define( 'ALF_PRELOAD_EXISTENCE', 2 );
-define( 'ALF_NO_LINK_LOCK', 4 );
-define( 'ALF_NO_BLOCK_LOCK', 8 );
+const ALF_PRELOAD_LINKS = 1;
+const ALF_PRELOAD_EXISTENCE = 2;
+const ALF_NO_LINK_LOCK = 4;
+const ALF_NO_BLOCK_LOCK = 8;
 /**@}*/
 
 /**@{
@@ -142,45 +137,45 @@ define( 'MW_DATE_MDY', '1' );
 define( 'MW_DATE_DMY', '2' );
 define( 'MW_DATE_YMD', '3' );
 define( 'MW_DATE_ISO', 'ISO 8601' );*/
-define( 'MW_DATE_DEFAULT', 'default' );
-define( 'MW_DATE_MDY', 'mdy' );
-define( 'MW_DATE_DMY', 'dmy' );
-define( 'MW_DATE_YMD', 'ymd' );
-define( 'MW_DATE_ISO', 'ISO 8601' );
+const MW_DATE_DEFAULT = 'default';
+const MW_DATE_MDY = 'mdy';
+const MW_DATE_DMY = 'dmy';
+const MW_DATE_YMD = 'ymd';
+const MW_DATE_ISO = 'ISO 8601';
 /**@}*/
 
 /**@{
  * RecentChange type identifiers
  */
-define( 'RC_EDIT', 0);
-define( 'RC_NEW', 1);
-define( 'RC_MOVE', 2); // obsolete
-define( 'RC_LOG', 3);
-define( 'RC_MOVE_OVER_REDIRECT', 4); // obsolete
+const RC_EDIT = 0;
+const RC_NEW = 1;
+const RC_MOVE = 2; // obsolete
+const RC_LOG = 3;
+const RC_MOVE_OVER_REDIRECT = 4; // obsolete
 /**@}*/
 
 /**@{
  * Article edit flags
  */
-define( 'EDIT_NEW', 1 );
-define( 'EDIT_UPDATE', 2 );
-define( 'EDIT_MINOR', 4 );
-define( 'EDIT_SUPPRESS_RC', 8 );
-define( 'EDIT_FORCE_BOT', 16 );
-define( 'EDIT_DEFER_UPDATES', 32 );
-define( 'EDIT_AUTOSUMMARY', 64 );
+const EDIT_NEW = 1;
+const EDIT_UPDATE = 2;
+const EDIT_MINOR = 4;
+const EDIT_SUPPRESS_RC = 8;
+const EDIT_FORCE_BOT = 16;
+const EDIT_DEFER_UPDATES = 32;
+const EDIT_AUTOSUMMARY = 64;
 /**@}*/
 
 /**@{
  * Flags for Database::makeList()
  * These are also available as Database class constants
  */
-define( 'LIST_COMMA', 0 );
-define( 'LIST_AND', 1 );
-define( 'LIST_SET', 2 );
-define( 'LIST_NAMES', 3);
-define( 'LIST_OR', 4);
-define( 'LIST_SET_PREPARED', 8);  // List of (?, ?, ?) for DatabaseIbm_db2
+const LIST_COMMA = 0;
+const LIST_AND = 1;
+const LIST_SET = 2;
+const LIST_NAMES = 3;
+const LIST_OR = 4;
+const LIST_SET_PREPARED = 8;  // List of (?, ?, ?) for DatabaseIbm_db2
 /**@}*/
 
 /**
@@ -191,63 +186,63 @@ require_once dirname(__FILE__).'/normal/UtfNormalDefines.php';
 /**@{
  * Hook support constants
  */
-define( 'MW_SUPPORTS_EDITFILTERMERGED', 1 );
-define( 'MW_SUPPORTS_PARSERFIRSTCALLINIT', 1 );
-define( 'MW_SUPPORTS_LOCALISATIONCACHE', 1 );
+const MW_SUPPORTS_EDITFILTERMERGED = 1;
+const MW_SUPPORTS_PARSERFIRSTCALLINIT = 1;
+const MW_SUPPORTS_LOCALISATIONCACHE = 1;
 /**@}*/
 
 /** Support for $wgResourceModules */
-define( 'MW_SUPPORTS_RESOURCE_MODULES', 1 );
+const MW_SUPPORTS_RESOURCE_MODULES = 1;
 
 /**@{
  * Allowed values for Parser::$mOutputType
  * Parameter to Parser::startExternalParse().
  */
-define( 'OT_HTML', 1 );
-define( 'OT_WIKI', 2 );
-define( 'OT_PREPROCESS', 3 );
-define( 'OT_MSG' , 3 );  // b/c alias for OT_PREPROCESS
-define( 'OT_PLAIN', 4 );
+const OT_HTML = 1;
+const OT_WIKI = 2;
+const OT_PREPROCESS = 3;
+const OT_MSG = 3;  // b/c alias for OT_PREPROCESS
+const OT_PLAIN = 4;
 /**@}*/
 
 /**@{
  * Flags for Parser::setFunctionHook
  */
-define( 'SFH_NO_HASH', 1 );
-define( 'SFH_OBJECT_ARGS', 2 );
+const SFH_NO_HASH = 1;
+const SFH_OBJECT_ARGS = 2;
 /**@}*/
 
 /**
  * Flags for Parser::setLinkHook
  */
-define( 'SLH_PATTERN', 1 );
+const SLH_PATTERN = 1;
 
 /**
  * Flags for Parser::replaceLinkHolders
  */
-define( 'RLH_FOR_UPDATE', 1 );
+const RLH_FOR_UPDATE = 1;
 
 /**@{
  * Autopromote conditions (must be here and not in Autopromote.php, so that
  * they're loaded for DefaultSettings.php before AutoLoader.php)
  */
-define( 'APCOND_EDITCOUNT', 1 );
-define( 'APCOND_AGE', 2 );
-define( 'APCOND_EMAILCONFIRMED', 3 );
-define( 'APCOND_INGROUPS', 4 );
-define( 'APCOND_ISIP', 5 );
-define( 'APCOND_IPINRANGE', 6 );
-define( 'APCOND_AGE_FROM_EDIT', 7 );
-define( 'APCOND_BLOCKED', 8 );
-define( 'APCOND_ISBOT', 9 );
+const APCOND_EDITCOUNT = 1;
+const APCOND_AGE = 2;
+const APCOND_EMAILCONFIRMED = 3;
+const APCOND_INGROUPS = 4;
+const APCOND_ISIP = 5;
+const APCOND_IPINRANGE = 6;
+const APCOND_AGE_FROM_EDIT = 7;
+const APCOND_BLOCKED = 8;
+const APCOND_ISBOT = 9;
 /**@}*/
 
 /**
  * Protocol constants for wfExpandUrl()
  */
-define( 'PROTO_HTTP', 'http://' );
-define( 'PROTO_HTTPS', 'https://' );
-define( 'PROTO_RELATIVE', '//' );
-define( 'PROTO_CURRENT', null );
-define( 'PROTO_CANONICAL', 1 );
-define( 'PROTO_INTERNAL', 2 );
+const PROTO_HTTP = 'http://';
+const PROTO_HTTPS = 'https://';
+const PROTO_RELATIVE = '//';
+const PROTO_CURRENT = null;
+const PROTO_CANONICAL = 1;
+const PROTO_INTERNAL = 2;

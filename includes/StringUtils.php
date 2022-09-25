@@ -193,7 +193,8 @@ class StringUtils {
 	 * @param $subject
 	 * @return \ArrayIterator|\ExplodeIterator
 	 */
-	static function explode( $separator, $subject ) {
+	static function explode( $separator, $subject ): ExplodeIterator|ArrayIterator
+    {
 		if ( substr_count( $subject, $separator ) > 1000 ) {
 			return new ExplodeIterator( $separator, $subject );
 		} else {
@@ -383,7 +384,7 @@ class ExplodeIterator implements Iterator {
 		$this->rewind();
 	}
 
-	function rewind() {
+	#[ReturnTypeWillChange] function rewind() {
 		$this->curPos = 0;
 		$this->endPos = strpos( $this->subject, $this->delim );
 		$this->refreshCurrent();
@@ -402,15 +403,15 @@ class ExplodeIterator implements Iterator {
 		}
 	}
 
-	function current() {
+	#[ReturnTypeWillChange] function current() {
 		return $this->current;
 	}
 
-	function key() {
+	#[ReturnTypeWillChange] function key() {
 		return $this->curPos;
 	}
 
-	function next() {
+	#[ReturnTypeWillChange] function next() {
 		if ( $this->endPos === false ) {
 			$this->curPos = false;
 		} else {
@@ -425,7 +426,7 @@ class ExplodeIterator implements Iterator {
 		return $this->current;
 	}
 
-	function valid() {
+	#[ReturnTypeWillChange] function valid() {
 		return $this->curPos !== false;
 	}
 }

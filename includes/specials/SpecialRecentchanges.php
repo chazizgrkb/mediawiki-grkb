@@ -574,10 +574,10 @@ class SpecialRecentChanges extends IncludableSpecialPage {
 
 			$out .= Xml::openElement( 'tr' );
 			if( is_array( $optionRow ) ) {
-				$out .= Xml::tags( 'td', array( 'class' => 'mw-label' ), $optionRow[0] );
-				$out .= Xml::tags( 'td', array( 'class' => 'mw-input' ), $optionRow[1] . $addSubmit );
+				$out .= Xml::tags( 'td', $optionRow[0], array( 'class' => 'mw-label' ), );
+				$out .= Xml::tags( 'td', $optionRow[1] . $addSubmit, array( 'class' => 'mw-input' ) );
 			} else {
-				$out .= Xml::tags( 'td', array( 'class' => 'mw-input', 'colspan' => 2 ), $optionRow . $addSubmit );
+				$out .= Xml::tags( 'td', $optionRow . $addSubmit, array( 'class' => 'mw-input', 'colspan' => 2 ), );
 			}
 			$out .= Xml::closeElement( 'tr' );
 		}
@@ -590,7 +590,7 @@ class SpecialRecentChanges extends IncludableSpecialPage {
 
 		$t = $this->getTitle();
 		$out .= Html::hidden( 'title', $t->getPrefixedText() );
-		$form = Xml::tags( 'form', array( 'action' => $wgScript ), $out );
+		$form = Xml::tags( 'form', $out, array( 'action' => $wgScript ), );
 		$panel[] = $form;
 		$panelString = implode( "\n", $panel );
 

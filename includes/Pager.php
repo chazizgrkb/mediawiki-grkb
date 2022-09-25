@@ -925,7 +925,7 @@ abstract class TablePager extends IndexPager {
 			if ( $formatted == '' ) {
 				$formatted = '&#160;';
 			}
-			$s .= Xml::tags( 'td', $this->getCellAttrs( $field, $value ), $formatted );
+			$s .= Xml::tags( 'td', $formatted, $this->getCellAttrs( $field, $value ) );
 		}
 		$s .= "</tr>\n";
 		return $s;

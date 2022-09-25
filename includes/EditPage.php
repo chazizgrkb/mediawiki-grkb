@@ -2082,8 +2082,8 @@ class EditPage {
 
 		$label = null;
 		if ( $labelText ) {
-			$label = Xml::tags( 'label', $inputAttrs['id'] ? array( 'for' => $inputAttrs['id'] ) : null, $labelText );
-			$label = Xml::tags( 'span', $spanLabelAttrs, $label );
+			$label = Xml::tags( 'label', $labelText, $inputAttrs['id'] ? array( 'for' => $inputAttrs['id'] ) : null );
+			$label = Xml::tags( 'span', $label,$spanLabelAttrs );
 		}
 
 		$input = Html::input( 'wpSummary', $summary, 'text', $inputAttrs );
@@ -2136,12 +2136,12 @@ class EditPage {
 		$message = $isSubjectPreview ? 'subject-preview' : 'summary-preview';
 
 		$summary = wfMsgExt( $message, 'parseinline' ) . Linker::commentBlock( $summary, $this->mTitle, $isSubjectPreview );
-		return Xml::tags( 'div', array( 'class' => 'mw-summary-preview' ), $summary );
+		return Xml::tags( 'div', $summary, array( 'class' => 'mw-summary-preview' ), );
 	}
 
 	protected function showFormBeforeText() {
 		global $wgOut;
-		$section = htmlspecialchars( $this->section );
+		$section = htmlspecialchars( $this->section ?? '');
 		$wgOut->addHTML( <<<HTML
 <input type='hidden' value="{$section}" name="wpSection" />
 <input type='hidden' value="{$this->starttime}" name="wpStarttime" />
@@ -2943,7 +2943,7 @@ HTML
 
 		$s =
 		'<?xml version="1.0" encoding="UTF-8" ?>' . "\n" .
-		Xml::tags( 'livepreview', null,
+		Xml::tags( 'livepreview',
 			Xml::element( 'preview', null, $previewText )
 			#.	Xml::element( 'category', null, $categories )
 		);

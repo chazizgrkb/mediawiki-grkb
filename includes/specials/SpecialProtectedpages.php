@@ -245,8 +245,7 @@ class SpecialProtectedpages extends SpecialPage {
 		return "<span style='white-space: nowrap'>" .
 			Xml::label( wfMsg('restriction-type') , $this->IdType ) . '&#160;' .
 			Xml::tags( 'select',
-				array( 'id' => $this->IdType, 'name' => $this->IdType ),
-				implode( "\n", $options ) ) . "</span>";
+				implode( "\n", $options ), array( 'id' => $this->IdType, 'name' => $this->IdType ) ) . "</span>";
 	}
 
 	/**

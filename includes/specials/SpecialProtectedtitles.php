@@ -172,8 +172,8 @@ class SpecialProtectedtitles extends SpecialPage {
 		return
 			Xml::label( wfMsg('restriction-level') , $this->IdLevel ) . '&#160;' .
 			Xml::tags( 'select',
-				array( 'id' => $this->IdLevel, 'name' => $this->IdLevel ),
-				implode( "\n", $options ) );
+				implode( "\n", $options ),
+                array( 'id' => $this->IdLevel, 'name' => $this->IdLevel ) );
 	}
 }
 

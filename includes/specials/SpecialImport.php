@@ -414,7 +414,7 @@ class ImportReporter extends ContextSource {
 		if ( $this->mLogItemCount > 0 ) {
 			$msg = wfMsgExt( 'imported-log-entries', 'parseinline',
 						$this->getLanguage()->formatNum( $this->mLogItemCount ) );
-			$out->addHTML( Xml::tags( 'li', null, $msg ) );
+			$out->addHTML( Xml::tags( 'li', $msg ) );
 		} elseif( $this->mPageCount == 0 && $this->mLogItemCount == 0 ) {
 			$out->addHTML( "</ul>\n" );
 			return Status::newFatal( 'importnopages' );

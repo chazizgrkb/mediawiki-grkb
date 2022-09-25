@@ -403,13 +403,11 @@ class ProtectionForm {
 							{$mProtectexpiry}
 						</td>
 						<td class='mw-input'>" .
-							Xml::tags( 'select',
-								array(
-									'id' => "mwProtectExpirySelection-$action",
-									'name' => "wpProtectExpirySelection-$action",
-									'onchange' => "ProtectionForm.updateExpiryList(this)",
-									'tabindex' => '2' ) + $this->disabledAttrib,
-								$expiryFormOptions ) .
+							Xml::tags( 'select', $expiryFormOptions, array(
+                                    'id' => "mwProtectExpirySelection-$action",
+                                    'name' => "wpProtectExpirySelection-$action",
+                                    'onchange' => "ProtectionForm.updateExpiryList(this)",
+                                    'tabindex' => '2' ) + $this->disabledAttrib ) .
 						"</td>
 					</tr></table>";
 			}

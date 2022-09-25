@@ -145,7 +145,7 @@ abstract class MediaTransformOutput {
 	 */
 	protected function linkWrap( $linkAttribs, $contents ) {
 		if ( $linkAttribs ) {
-			return Xml::tags( 'a', $linkAttribs, $contents );
+			return Xml::tags( 'a', $contents, $linkAttribs );
 		} else {
 			return $contents;
 		}
